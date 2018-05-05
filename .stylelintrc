@@ -1,0 +1,39 @@
+{
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-scss"
+  ],
+  "defaultSeverity": "warning",
+  "rules": {
+    "at-rule-no-vendor-prefix": true,
+      "block-opening-brace-space-before": null,
+      "block-closing-brace-empty-line-before": null,
+    "at-rule-empty-line-before": null,
+    "media-feature-name-no-vendor-prefix": true,
+    "selector-pseudo-element-colon-notation": single,
+    "property-no-vendor-prefix": true,
+    "selector-no-vendor-prefix": true,
+    "value-no-vendor-prefix": true,
+    "max-nesting-depth": [
+      4,
+      {
+        "ignore": [
+          "blockless-at-rules"
+        ]
+      }
+    ],
+    "selector-max-compound-selectors": 4,
+    "selector-max-specificity": "1,4,1",
+    "declaration-no-important": true,
+    "selector-max-universal": 0,
+    "max-line-length": 250,
+    "no-eol-whitespace": null,
+    "at-rule-no-unknown": null
+  },
+  "ignoreFiles": [
+    "node_modules",
+    "src/scss/sprites/*.scss",
+    "src/scss/vars/*.scss",
+    "src/scss/*/reset.scss"
+  ]
+}
