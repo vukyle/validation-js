@@ -1,6 +1,17 @@
 function Validation(id) {
   this.formId = id;
   this.form = document.getElementById(id);
+  //email validation, returns a boolean
+  this.validateEmail = function(inputValue) {
+    let validDomainRegex = /\.(con|cpm|cin|cok)/; // regex for domains that should be rejected
+    let validEmailRegex = /^([A-Za-z0-9_\.-]+)@([\A-Zda-z\.-]+)\.([A-Za-z\.]{2,6})$/; // valid characters that must be present to be accepted as a valid email
+
+    if(validDomainRegex.test(inputValue) || !(validEmailRegex.test(inputValue))) {
+      return true;
+    } else {
+      return false;
+    }
+  };
   //phone validation
   this.invalidPhone = function(elNumber) {
     var digits = elNumber.value.replace(/\D/g, ''),
@@ -30,10 +41,13 @@ function Validation(id) {
     } else {
       return false;
     }
-  };
+  }
+  this.returnRadioBoxValue = function() {
+
+  }
   //locate form, find inputs and create objects based on inputs available
   this.createInputObj = function() {
-    var c = {
+    var inputObject = {
       input: {},
       expression: {
         domains: /\.(con|cpm|cin|cok)/, //regular expression for invalid domains
@@ -49,15 +63,47 @@ function Validation(id) {
       errorMessage: [],
       digits: ''
     };
-    var inputs = this.form.getElementsByTagName('INPUT');
+    var inputNodeList= this.form.querySelectorAll('.js-input');
+    var inputs = Array.from(inputNodeList);
+    // console.log(select.value);
+    // console.log(select.dataset.type);
+
+    //var inputs = this.form.getElementsByTagName('INPUT');
 
     //loops through the inputs nodelist and creates the input object
+    //need to check what type of input
     for(let i = 0; i < inputs.length; i++) {
-      c.input[inputs[i].name] = inputs[i].value;
-    }
+      var input = inputs[i];
+      //var inputType = inputs[i].type;
+      var inputName = inputs[i].dataset.name;
+      var inputType = inputs[i].dataset.type;
+      var inputValue = inputs[i].value;
 
-    console.log(Object.keys(c.input).length);
-    return c;
+      switch (inputType) {
+        case 'text':
+        //inputObject.input[inputs[i].name] = inputs[i].value;
+        inputObject.input[inputName] = inputValue;
+        break;
+        case 'radio':
+        inputObject.input[inputName] = inputValue;
+        //checks if a radio box is checked. If checked, it passes the value, else it passes null as the value.
+        if(input.checked) {
+          console.log(inputObject.input[inputName]);
+          inputObject.input[inputName] = inputValue;
+        } else {
+          inputObject.input[inputName] = 'yolo';
+        }
+        break;
+        case 'select':
+        inputObject.input[inputName] = input.options[input.selectedIndex].value;
+        break;
+        default:
+
+      }
+    }
+    // console.log(inputs);
+    // console.log(Object.keys(inputObject.input).length);
+    return inputObject;
   };
   this.inputObject = this.createInputObj();
   this.invalidInputs = function(element) {
@@ -82,10 +128,11 @@ function Validation(id) {
   };
   this.validateField = function(event) {
     //call the returnFormObject to return an object
-    var c = this.createInputObj();
+    //var c = this.createInputObj();
     var inputName = event.target.name;
     var inputValue = event.target.value;
     var inputElement = event.target;
+
 
     //switch statement that checks the name of the input in order to call the correct validation function
     switch (inputName) {
@@ -111,7 +158,7 @@ function Validation(id) {
       }
       break;
       case 'email_address':
-      if (this.regulerExpresionCheck(inputValue, c.expression.domains) || !this.regulerExpresionCheck(inputValue, c.expression.email)) {
+      if (this.validateEmail(inputValue)) {
         this.invalidInputs(inputElement);
       } else {
         this.validInputs(inputElement);
@@ -130,8 +177,10 @@ function Validation(id) {
     var inputObj = c.input;
     var inputObjLength = Object.keys(this.inputObject.input).length;
 
-    console.log(inputObj.first_name);
-    console.log(this.inputObject.msg.firstName);
+    console.log(inputObj);
+
+    // console.log(inputObj.first_name);
+    // console.log(this.inputObject.msg.firstName);
 
     // for(let i = 0; i < inputObjLength; i++) {
     //   switch (inputObj[Object.keys(inputObj)[i]]) {
@@ -186,16 +235,19 @@ function Validation(id) {
     //input validation listener
     this.massAddEventListener(this.form, 'keydown keyup focusout change paste cut', (event) => {
       this.validateField(event);
-      var inputObj = this.inputObject.input;
+      //var inputObj = this.inputObject.input;
+      //var inputObj = this.createInputObj();
       // console.log(inputObj);
       // console.log(inputObj[Object.keys(inputObj)[0]]);
       // console.log(inputObj.contact_phone);
     });
 
+    //form submission listener
     this.form.addEventListener('click', (event) => {
-      event.preventDefault();
+      //event.preventDefault();
       var target = event.target;
       if(target.type == 'submit') {
+        event.preventDefault();
         //this.submitForm();
         this.validateSubmission();
       }
@@ -210,6 +262,3 @@ var form1 = new Validation('form1');
 
 // var form2 = new Validation('form2');
 // form2.createInputObj();
-
-var inputs = document.getElementsByTagName('INPUT');
-console.log(inputs[0].value);

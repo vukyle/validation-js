@@ -43,5 +43,9 @@
     "webpack": "^4.6.0",
     "webpack-cli": "^2.0.14",
     "webpack-spritesmith": "^0.4.1"
-  }
+  },
+  "name": "validation-js",
+  "repository": "https://github.com/vukyle/validation-js.git",
+  "author": "Vu Le <vu.ky.le@gmail.com>",
+  "license": "MIT"
 }
